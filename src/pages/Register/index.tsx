@@ -1,8 +1,9 @@
+import registerImg from "../../assets/signup.svg";
 import Input from "../../components/Input";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FiMail, FiLock } from "react-icons/fi";
+import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import apiTasks from "../../services";
 import { useNavigate, Link } from "react-router-dom";
 import Button from "../../components/Button";
@@ -12,20 +13,26 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface LoginProps {
   autentication: boolean;
-  setAutentication: (auth: boolean) => void;
 }
 
-interface LoginFormData {
+interface user {
+  name: string;
   email: string;
   password: string;
 }
 
-const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
+const Register = ({ autentication }: LoginProps) => {
   const schema = yup.object().shape({
+    name: yup.string().required("Campo obrigatório"),
     email: yup.string().required("Campo obrigatório"),
+    cpf: yup.string().required("Campo obrigatório"),
     password: yup
       .string()
       .min(8, "Mínimo 8 dígitos")
+      .required("Campo obrigatório"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "Senhas diferentes")
       .required("Campo obrigatório"),
   });
 
@@ -39,27 +46,48 @@ const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = ({ name, email, password }: user) => {
+    const user = { name, email, password };
     apiTasks
-      .post("/login", data)
-      .then((res) => {
-        const { token, user } = res.data;
-        localStorage.setItem("@Doit:token", JSON.stringify(token));
-        localStorage.setItem("@Doit:user", JSON.stringify(user));
-        setAutentication(true);
-        toast.success("Bem-vindo");
-        return navigate("/dashboard");
+      .post("user/register", user)
+      .then(() => {
+        toast.success("Cadastrado com sucesso");
+        return navigate("/login");
       })
-      .catch(() => {
-        toast.error("Usuário não encontrado");
-      });
+      .catch(() => toast.error("Algo deu errado ):"));
   };
+
+  if (autentication) {
+    return <Link to="/dashboard" />;
+  }
 
   return (
     <div className="h-screen w-full flex items-center justify-center">
+      <div className="bg-black h-full w-1/2 flex justify-center flex-auto">
+        <div
+          className="flex flex-1 items-center justify-center bg-no-repeat bg-cover bg-center animate-slideIn"
+          style={{ backgroundImage: `url(${registerImg})` }}
+        ></div>
+      </div>
       <div className="flex flex-col items-center justify-center animate-slide-in h-screen w-1/2">
-        <h1 className="text-4xl mb-4">Login</h1>
+        <h1 className="text-4xl mb-4">Registre-se</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm">
+          <Input
+            register={register}
+            name="name"
+            icon={FiUser}
+            label="Nome"
+            placeholder="Seu nome"
+            error={errors.name?.message}
+          />
+          <Input
+            register={register}
+            name="cpf"
+            icon={FiUser}
+            label="CPF"
+            placeholder="Insira seu cpf"
+            error={errors.name?.message}
+          />
           <Input
             register={register}
             name="email"
@@ -78,6 +106,15 @@ const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
             type="password"
             error={errors.password?.message}
           />
+          <Input
+            register={register}
+            name="confirmPassword"
+            icon={FiLock}
+            label="Confirmar senha"
+            placeholder="Confirmar senha"
+            type="password"
+            error={errors.confirmPassword?.message}
+          />
           <Button type="submit">Enviar</Button>
           <p className="mt-4">
             Não possui uma conta?{" "}
@@ -87,14 +124,7 @@ const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
           </p>
         </form>
       </div>
-      <div className="bg-black h-full w-1/2 flex justify-center flex-auto">
-        <div
-          className="flex flex-1 items-center justify-center bg-no-repeat bg-cover bg-center animate-slideIn"
-          style={{ backgroundImage: `url(${imgLogin})` }}
-        ></div>
-      </div>
     </div>
   );
-}; 
-
-export default Login;
+};
+export default Register;
