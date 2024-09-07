@@ -12,19 +12,20 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface LoginProps {
-  autentication: boolean;
+  authenticated: boolean;
 }
 
 interface user {
   name: string;
   email: string;
+  cpf: string;
   password: string;
 }
 
-const Register = ({ autentication }: LoginProps) => {
+const Register = ({ authenticated }: LoginProps): any => {
   const schema = yup.object().shape({
     name: yup.string().required("Campo obrigatório"),
-    email: yup.string().required("Campo obrigatório"),
+    email: yup.string().required("Campo obrigatório").email(),
     cpf: yup.string().required("Campo obrigatório"),
     password: yup
       .string()
@@ -46,19 +47,20 @@ const Register = ({ autentication }: LoginProps) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = ({ name, email, password }: user) => {
-    const user = { name, email, password };
+  const onSubmit = ({ name, email, cpf, password }: user) => {
+    const user = { name, email, cpf, password };
+    console.log(user);
     apiTasks
-      .post("user/register", user)
+      .post("users", user)
       .then(() => {
         toast.success("Cadastrado com sucesso");
         return navigate("/login");
       })
-      .catch(() => toast.error("Algo deu errado ):"));
+      .catch((err) => toast.error("Algo deu errado", err));
   };
 
-  if (autentication) {
-    return <Link to="/dashboard" />;
+  if (authenticated) {
+    return navigate("/dashboard");
   }
 
   return (
@@ -117,9 +119,9 @@ const Register = ({ autentication }: LoginProps) => {
           />
           <Button type="submit">Enviar</Button>
           <p className="mt-4">
-            Não possui uma conta?{" "}
-            <Link to="/signup" className="text-blue-500">
-              Cadastre-se
+            Já possui uma conta?{" "}
+            <Link to="/login" className="text-blue-500">
+              Login
             </Link>
           </p>
         </form>

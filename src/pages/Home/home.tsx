@@ -1,8 +1,12 @@
 import Button from "../../components/Button";
 import { useNavigate } from "react-router";
 
-const Home = () => {
+const Home = ({ authenticated }: any): any => {
   const navigate = useNavigate();
+
+  if (authenticated) {
+    return navigate("/dashboard");
+  }
 
   return (
     <div className="flex items-center justify-center text-center h-screen">

@@ -9,10 +9,11 @@ import Button from "../../components/Button";
 import imgLogin from "../../assets/login.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
 
 interface LoginProps {
-  autentication: boolean;
-  setAutentication: (auth: boolean) => void;
+  authenticated: boolean;
+  setAuthenticated: (auth: boolean) => void;
 }
 
 interface LoginFormData {
@@ -20,7 +21,7 @@ interface LoginFormData {
   password: string;
 }
 
-const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
+const Login = ({ authenticated, setAuthenticated }: LoginProps): any => {
   const schema = yup.object().shape({
     email: yup.string().required("Campo obrigatório"),
     password: yup
@@ -43,17 +44,23 @@ const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
     apiTasks
       .post("/login", data)
       .then((res) => {
-        const { token, user } = res.data;
-        localStorage.setItem("@Doit:token", JSON.stringify(token));
-        localStorage.setItem("@Doit:user", JSON.stringify(user));
-        setAutentication(true);
+        const { token, userReturn } = res.data.user;
+        localStorage.setItem("@Tasks:token", token);
+        localStorage.setItem("@Tasks:user", JSON.stringify(userReturn));
+        setAuthenticated(true);
         toast.success("Bem-vindo");
         return navigate("/dashboard");
       })
       .catch(() => {
-        toast.error("Usuário não encontrado");
+        toast.error("Email ou senha incorreto");
       });
   };
+
+  useEffect(() => {
+    if (authenticated) {
+      return navigate("/dashboard");
+    }
+  }, [authenticated]);
 
   return (
     <div className="h-screen w-full flex items-center justify-center">
@@ -95,6 +102,6 @@ const Login: React.FC<LoginProps> = ({ autentication, setAutentication }) => {
       </div>
     </div>
   );
-}; 
+};
 
 export default Login;
