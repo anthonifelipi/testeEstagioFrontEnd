@@ -41,7 +41,6 @@ const DashBoard = ({
         },
       })
       .then((res) => {
-        console.log(res.data);
         setTasks(res.data);
       })
       .catch((error) => {
@@ -140,21 +139,16 @@ const DashBoard = ({
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
           .filter((item) => item.completed == false)
-          .map(
-            (item) => (
-              console.log(item),
-              (
-                <Card
-                  key={item.id}
-                  title={item.title}
-                  description={item.description}
-                  createdAt={item.createdAt}
-                  onClick={() => updatedTask(item.id)}
-                  children={"Concluir Tarefa"}
-                />
-              )
-            )
-          )}
+          .map((item) => (
+            <Card
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              createdAt={item.createdAt}
+              onClick={() => updatedTask(item.id)}
+              children={"Concluir Tarefa"}
+            />
+          ))}
       </div>
     </div>
   );

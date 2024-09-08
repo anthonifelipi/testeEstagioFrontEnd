@@ -38,7 +38,6 @@ const TasksDone = ({
         },
       })
       .then((res) => {
-        console.log(res.data);
         setTasks(res.data);
       })
       .catch((error) => {
@@ -86,21 +85,16 @@ const TasksDone = ({
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
           .filter((item) => item.completed == true)
-          .map(
-            (item) => (
-              console.log(item),
-              (
-                <Card
-                  key={item.id}
-                  title={item.title}
-                  description={item.description}
-                  createdAt={item.createdAt}
-                  onClick={() => deleteTask(item.id)}
-                  children={"Excluir Tarefa"}
-                />
-              )
-            )
-          )}
+          .map((item) => (
+            <Card
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              createdAt={item.createdAt}
+              onClick={() => deleteTask(item.id)}
+              children={"Excluir Tarefa"}
+            />
+          ))}
       </div>
     </div>
   );
