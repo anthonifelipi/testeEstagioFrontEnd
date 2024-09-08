@@ -1,15 +1,11 @@
-import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import Button from "../../components/Button";
-import Input from "../../components/Input";
-import { FiEdit2 } from "react-icons/fi";
-import Card from "../../components/Card";
+import { useContext, useEffect } from "react";
 import { TasksContext } from "../../providers/tasks";
 import apiTasks from "../../services/index";
-import { toast } from "react-toastify";
+import Card from "../../components/Card";
 
-const DashBoard = ({
+const TasksDone = ({
   authenticated,
   setAuthenticated,
 }: {
@@ -25,13 +21,14 @@ const DashBoard = ({
   }, [authenticated, navigate]);
 
   const { tasks, setTasks, createTask, removeTask } = useContext(TasksContext);
-
   const token = localStorage.getItem("@Tasks:token") || "";
-  const [user] = useState(() => {
-    const storedUser = localStorage.getItem("@Tasks:user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-  const { register, handleSubmit } = useForm();
+
+  const handleLogout = () => {
+    localStorage.removeItem("@Tasks:token");
+    localStorage.removeItem("@Tasks:user");
+    setAuthenticated(false);
+    navigate("/login");
+  };
 
   const loadTasks = () => {
     apiTasks
@@ -49,46 +46,13 @@ const DashBoard = ({
       });
   };
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const onSubmit = async (data: any) => {
-    const tarefa = {
-      title: data.title,
-      description: data.description,
-    };
-    if (!data.title || !data.description) {
-      return toast.error("Preencha os campos para inserir uma tarefa");
-    }
+  const deleteTask = (taskId: string | undefined) => {
     apiTasks
-      .post("/tasks", tarefa, {
+      .delete(`/tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => setTasks((prevTasks) => [...prevTasks, res.data]))
-      .catch((err) => console.error("Erro ao criar a tarefa", err));
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("@Tasks:token");
-    localStorage.removeItem("@Tasks:user");
-    setAuthenticated(false);
-    navigate("/login");
-  };
-
-  const updatedTask = (taskId: string | undefined) => {
-    apiTasks
-      .patch(
-        `/tasks/${taskId}`,
-        { completed: true },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
       .then((res) => {
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
@@ -106,40 +70,22 @@ const DashBoard = ({
       <header className=" text-white py-4 border-b border-gray-300 ">
         <div className="container mx-auto flex justify-between items-center px-4">
           <h1 className="text-2xl font-bold text-black font-['Roboto_Mono']">
-            Gerencie suas tarefas rápido e prático
+            Tarefas concluidas
           </h1>
           <nav className="flex items-center gap-8 w-4/12">
             <Button
-              onClick={() => navigate("/tasksDone")}
-              children={"Tarefas concluidas "}
+              onClick={() => navigate("/dashBoard")}
+              children={"Voltar a Tarefas "}
               whiteSchema
             />
             <Button onClick={handleLogout} children={"Logout"} />
           </nav>
         </div>
       </header>
-      <form className="flex-1" onSubmit={handleSubmit(onSubmit)}>
-        <section className="flex flex-col items-center">
-          <Input
-            icon={FiEdit2}
-            placeholder={"Titulo"}
-            register={register}
-            name={"title"}
-          />
-          <Input
-            icon={FiEdit2}
-            placeholder={"Descrição da tarefa"}
-            register={register}
-            name={"description"}
-          />
-          <div className="flex flex-1 w-2/12">
-            <Button type="submit" children={"Criar tarefa"} />
-          </div>
-        </section>
-      </form>
+
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
-          .filter((item) => item.completed == false)
+          .filter((item) => item.completed == true)
           .map(
             (item) => (
               console.log(item),
@@ -149,8 +95,8 @@ const DashBoard = ({
                   title={item.title}
                   description={item.description}
                   createdAt={item.createdAt}
-                  onClick={() => updatedTask(item.id)}
-                  children={"Concluir Tarefa"}
+                  onClick={() => deleteTask(item.id)}
+                  children={"Excluir Tarefa"}
                 />
               )
             )
@@ -159,4 +105,4 @@ const DashBoard = ({
     </div>
   );
 };
-export default DashBoard;
+export default TasksDone;

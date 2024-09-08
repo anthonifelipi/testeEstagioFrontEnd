@@ -88,7 +88,7 @@ const Login = ({ authenticated, setAuthenticated }: LoginProps): any => {
           <Button type="submit">Enviar</Button>
           <p className="mt-4">
             Não possui uma conta?{" "}
-            <Link to="/signup" className="text-blue-500">
+            <Link to="/register" className="text-blue-500">
               Cadastre-se
             </Link>
           </p>

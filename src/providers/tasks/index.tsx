@@ -2,6 +2,7 @@ import apiTasks from "../../services/index";
 import { createContext, FC, ReactNode, useState } from "react";
 
 interface ITasks {
+  createdAt: string;
   id?: string;
   title: string;
   description: string;

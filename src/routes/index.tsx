@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import DashBoard from "../pages/Dashboard";
 import { useEffect, useState } from "react";
 import Dashboard from "../pages/Dashboard";
+import TasksDone from "../pages/TasksDone";
 
 const AllRoutes = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -35,7 +36,21 @@ const AllRoutes = () => {
       />
       <Route
         path="/dashboard"
-        element={<Dashboard authenticated={authenticated} />}
+        element={
+          <Dashboard
+            authenticated={authenticated}
+            setAuthenticated={setAuthenticated}
+          />
+        }
+      />
+      <Route
+        path="/tasksDone"
+        element={
+          <TasksDone
+            authenticated={authenticated}
+            setAuthenticated={setAuthenticated}
+          />
+        }
       />
     </Routes>
   );
