@@ -57,7 +57,9 @@ Este projeto foi desenvolvido como parte de um teste técnico proposto pela empr
 
 ### Para rodar o projeto em sua máquina
 
-- Necessário : [Node.js](https://nodejs.org/en/download/) e [Yarn](https://yarnpkg.com/) para executar o projeto.
+- Necessário : [Node.js](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/) e SQLite(Caso opte por outro DB, adapte seu DB no Prisma) para executar o projeto.
+
+
 
 **Clone o projeto deste repositório**
 
@@ -67,7 +69,7 @@ $ git clone git@github.com:anthonifelipi/testeEstagioFrontEnd.git
 ```
 
 ```bash
-# Navegue até onde tenha feito o clone do repositorio
+# Navegue até onde tenha feito o clone do
 $ cd testeEstagioFrontEnd
 ```
 
@@ -81,6 +83,11 @@ $ yarn install
 # Inicie a aplicação
 $ yarn dev
 ```
+
+## AXIOS
+
+O **Axios** está configurado para fazer requisições para a API no endereço `http://localhost:3000`. Certifique-se de que o backend está rodando nesta mesma porta. Pode ser conferido na pasta SRC/services
+
 
 ## 📄 Licença
 
