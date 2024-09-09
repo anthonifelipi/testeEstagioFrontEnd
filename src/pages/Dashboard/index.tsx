@@ -29,7 +29,6 @@ const DashBoard = ({
   const [taskOnModal, setTaskOnModal] = useState<ITasksResponse | null>(null);
 
   const openModal = (item: any) => {
-    console.log(item, "modal");
     setTaskOnModal(item);
     setModalOpen(true);
   };
@@ -177,7 +176,6 @@ const DashBoard = ({
 
           .map(
             (item) => (
-              console.log(item),
               (
                 <Card
                   key={item.id}
@@ -227,10 +225,6 @@ const DashBoard = ({
             </form>
           </Modal>
         )}
-
-         
-          ))}
-
       </div>
     </div>
   );
