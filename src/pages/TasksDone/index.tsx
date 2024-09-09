@@ -38,7 +38,6 @@ const TasksDone = ({
         },
       })
       .then((res) => {
-        console.log(res.data);
         setTasks(res.data);
       })
       .catch((error) => {
@@ -86,6 +85,7 @@ const TasksDone = ({
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
           .filter((item) => item.completed == true)
+
           .map(
             (item) => (
               console.log(item),
@@ -103,6 +103,7 @@ const TasksDone = ({
               )
             )
           )}
+
       </div>
     </div>
   );

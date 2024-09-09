@@ -49,7 +49,6 @@ const Register = ({ authenticated }: LoginProps): any => {
 
   const onSubmit = ({ name, email, cpf, password }: user) => {
     const user = { name, email, cpf, password };
-    console.log(user);
     apiTasks
       .post("users", user)
       .then(() => {

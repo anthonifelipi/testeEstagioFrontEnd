@@ -62,7 +62,6 @@ const DashBoard = ({
         },
       })
       .then((res) => {
-        console.log(res.data);
         setTasks(res.data);
       })
       .catch((error) => {
@@ -175,6 +174,7 @@ const DashBoard = ({
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
           .filter((item) => item.completed == false)
+
           .map(
             (item) => (
               console.log(item),
@@ -227,6 +227,10 @@ const DashBoard = ({
             </form>
           </Modal>
         )}
+
+         
+          ))}
+
       </div>
     </div>
   );
