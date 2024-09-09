@@ -1,11 +1,15 @@
 const Input = ({
   label,
+  type,
   icon: Icon,
   register,
   name,
   error = "",
   ...rest
 }: any) => {
+  if (type === "hidden") {
+    return <input {...register(name)} {...rest} type="hidden" />;
+  }
   return (
     <div className="container text-left">
       <div className="mb-2">
@@ -23,6 +27,7 @@ const Input = ({
           className="bg-transparent flex-1 border-0  text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           {...register(name)}
           {...rest}
+          type={type}
         />
       </div>
     </div>

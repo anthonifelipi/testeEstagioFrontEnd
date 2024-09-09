@@ -85,16 +85,25 @@ const TasksDone = ({
       <div className="flex flex-wrap mt-8 px-[38px] justify-center">
         {tasks
           .filter((item) => item.completed == true)
-          .map((item) => (
-            <Card
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              createdAt={item.createdAt}
-              onClick={() => deleteTask(item.id)}
-              children={"Excluir Tarefa"}
-            />
-          ))}
+
+          .map(
+            (item) => (
+              console.log(item),
+              (
+                <Card
+                  key={item.id}
+                  title={item.title}
+                  description={item.description}
+                  createdAt={item.createdAt}
+                  onClick={() => deleteTask(item.id)}
+                  onDelete={() => deleteTask(item.id)}
+                  children={"Excluir Tarefa"}
+                  editButton={false}
+                />
+              )
+            )
+          )}
+
       </div>
     </div>
   );
