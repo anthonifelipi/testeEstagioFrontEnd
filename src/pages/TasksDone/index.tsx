@@ -88,7 +88,7 @@ const TasksDone = ({
 
           .map(
             (item) => (
-              console.log(item),
+
               (
                 <Card
                   key={item.id}
