@@ -85,7 +85,9 @@ const Login = ({ authenticated, setAuthenticated }: LoginProps): any => {
             type="password"
             error={errors.password?.message}
           />
-          <Button type="submit">Enviar</Button>
+          <div className="mt-4">
+            <Button type="submit">Enviar</Button>
+          </div>
           <p className="mt-4">
             Não possui uma conta?{" "}
             <Link to="/register" className="text-blue-500">

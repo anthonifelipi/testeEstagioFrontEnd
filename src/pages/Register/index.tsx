@@ -117,7 +117,9 @@ const Register = ({ authenticated }: LoginProps): any => {
             type="password"
             error={errors.confirmPassword?.message}
           />
-          <Button type="submit">Enviar</Button>
+          <div className="mt-4">
+            <Button type="submit">Enviar</Button>
+          </div>
           <p className="mt-4">
             Já possui uma conta?{" "}
             <Link to="/login" className="text-blue-500">

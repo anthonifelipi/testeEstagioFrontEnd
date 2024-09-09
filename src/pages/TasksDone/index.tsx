@@ -96,7 +96,9 @@ const TasksDone = ({
                   description={item.description}
                   createdAt={item.createdAt}
                   onClick={() => deleteTask(item.id)}
+                  onDelete={() => deleteTask(item.id)}
                   children={"Excluir Tarefa"}
+                  editButton={false}
                 />
               )
             )

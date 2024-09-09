@@ -4,10 +4,18 @@ import { useForm } from "react-hook-form";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import { FiEdit2 } from "react-icons/fi";
-import Card from "../../components/Card";
+import Card, { ITasks } from "../../components/Card";
 import { TasksContext } from "../../providers/tasks";
 import apiTasks from "../../services/index";
 import { toast } from "react-toastify";
+import Modal from "../../components/Modal";
+
+interface ITasksResponse extends ITasks {
+  createdAt: string;
+  updatedAt: string;
+  user: {};
+  userId: string;
+}
 
 const DashBoard = ({
   authenticated,
@@ -17,6 +25,19 @@ const DashBoard = ({
   setAuthenticated: (authenticated: boolean) => void;
 }) => {
   const navigate = useNavigate();
+  const [ModalIsOpen, setModalOpen] = useState(false);
+  const [taskOnModal, setTaskOnModal] = useState<ITasksResponse | null>(null);
+
+  const openModal = (item: any) => {
+    console.log(item, "modal");
+    setTaskOnModal(item);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setTaskOnModal(null);
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     if (!authenticated) {
@@ -68,6 +89,7 @@ const DashBoard = ({
         },
       })
       .then((res) => setTasks((prevTasks) => [...prevTasks, res.data]))
+
       .catch((err) => console.error("Erro ao criar a tarefa", err));
   };
 
@@ -78,27 +100,40 @@ const DashBoard = ({
     navigate("/login");
   };
 
-  const updatedTask = (taskId: string | undefined) => {
+  const updatedTask = (task: any) => {
     apiTasks
-      .patch(
-        `/tasks/${taskId}`,
-        { completed: true },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .patch(`/tasks/${task.id}`, task, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.id === taskId
+          prevTasks.map((item) =>
+            task.id === item.id
               ? { ...task, completed: res.data.completed }
               : task
           )
         );
+        setModalOpen(false);
+        loadTasks();
+        toast.success("Tarefa atualizada com sucesso.");
       })
       .catch((err) => console.error("Erro ao atualizar a tarefa", err));
+  };
+
+  const deletedTask = (taskId: string | undefined) => {
+    apiTasks
+      .delete(`/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+        toast.success("Tarefa deletada com sucesso");
+      })
+      .catch((err) => console.error("Erro ao excluir a tarefa", err));
   };
 
   return (
@@ -132,7 +167,7 @@ const DashBoard = ({
             register={register}
             name={"description"}
           />
-          <div className="flex flex-1 w-2/12">
+          <div className="flex flex-1 w-2/12 mt-4">
             <Button type="submit" children={"Criar tarefa"} />
           </div>
         </section>
@@ -149,12 +184,49 @@ const DashBoard = ({
                   title={item.title}
                   description={item.description}
                   createdAt={item.createdAt}
-                  onClick={() => updatedTask(item.id)}
+                  onClick={() => updatedTask({ id: item.id, completed: true })}
+                  onDelete={() => deletedTask(item.id)}
+                  onUpdate={() => openModal(item)}
                   children={"Concluir Tarefa"}
+                  editButton={true}
                 />
               )
             )
           )}
+        {ModalIsOpen && taskOnModal && (
+          <Modal
+            isOpen={ModalIsOpen}
+            onClose={closeModal}
+            title="Editar Tarefa"
+          >
+            <form onSubmit={handleSubmit(updatedTask)}>
+              <Input
+                type="hidden"
+                placeholder={"Id"}
+                register={register}
+                name={"id"}
+                value={taskOnModal.id}
+              />
+
+              <Input
+                icon={FiEdit2}
+                placeholder={"Titulo"}
+                register={register}
+                name={"title"}
+              />
+              <Input
+                icon={FiEdit2}
+                placeholder={"Descrição da tarefa"}
+                register={register}
+                name={"description"}
+              />
+
+              <div className="flex justify-end mt-2">
+                <Button type="submit" children={"Salvar"} />
+              </div>
+            </form>
+          </Modal>
+        )}
       </div>
     </div>
   );
